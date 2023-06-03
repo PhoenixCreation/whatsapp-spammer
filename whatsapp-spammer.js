@@ -18,12 +18,24 @@
  *
  * Again use at your own risk and very carefully.
  *
- * This script is tested on chrome and firefox. It works on both browsers perfectly.
+ * This script is not working on firefox due to some issues with pasting content to textinput.
+ * Recommended to use Chrome or Edge instead.
+ *
+ * This script is tested on chrome and edge. It works on both browsers perfectly.
  * It should work on any browser that supports javascript and DOM event manipulation.
+ *
+ * Last tested with following versions
+ * WhatsApp: 2.2323.4, Edge: 113.0.1774.57
+ * WhatsApp: 2.2323.4, Chrome: 114.0.5735.90
  */
-
-// Make sure to tell user to open the chat that they want to spam
-alert("Please make sure you have opened the chat you want to spam.");
+let dataTransfer = new DataTransfer();
+let box = document.querySelectorAll("[role=textbox]")[1];
+if (!box) {
+  alert("No chat open, Make sure you have opened the chat you want to spam.");
+  throw new Error(
+    "No chat open, Make sure you have opened the chat you want to spam."
+  );
+}
 
 // Get the number of messages to spam
 var count = prompt(
@@ -33,9 +45,10 @@ var count = prompt(
 
 // Make sure the user entered a number and it is between 0 and 100
 // I am setting limit to 100 because I am not sure most of the browsers can handle more than 100 messages
+// And going above 100 might trigger whatsapp spam detections
 if (!count || isNaN(count) || count < 0 || count > 100) {
   alert(
-    "Please enter a NUMBER between 0 and 100. \nYou can re-run the script now."
+    "Please enter only NUMBER between 0 and 100. \nYou can re-run the script now."
   );
 } else {
   // Get the message to spam
@@ -46,26 +59,35 @@ if (!count || isNaN(count) || count < 0 || count > 100) {
   } else {
     // Clear the current console for better visibility
     console.clear();
+    dataTransfer.setData("text/plain", message);
 
     // spam the messages
-    for (let i = 0; i < count; i++) {
-      console.log(`"${message}" sent -> ${i + 1} times`);
+    (async () => {
+      for (let i = 0; i < count; i++) {
+        // Get the input box
 
-      // Get the input box
-      var box = document.querySelectorAll("[role=textbox]")[1];
+        box.focus();
+        box.dispatchEvent(
+          new ClipboardEvent("paste", {
+            clipboardData: dataTransfer,
 
-      // create event of type 'input' so that the whatsapp UI will update to sending text message instead of voice message
-      InputEvent = Event || InputEvent;
-      var evt = new InputEvent("input", {
-        bubbles: true,
-        composer: true,
-      });
-      box.innerHTML = message; // set the message as input box value
-      box.dispatchEvent(evt); // trigger the event
+            // need these for the event to reach Draft paste handler
+            bubbles: true,
+            cancelable: true,
+          })
+        ); // trigger the event
 
-      // This is bit of stratch to select the send button and click it
-      // You need to climb up the DOM tree three levels and then to second child and then the first child is the send button
-      box.parentElement.parentElement.parentElement.children[1].children[0].click();
-    }
+        // Need to wait some time for 2 reasons:
+        // 1. The send button takes some time to render itself and then we can send the message
+        // 2. Notifications(that's the reason of spamming) will get send only once if it spammed immediately, waiting for 1 seocond
+        //     makes notification sent for each message(ignore if it doesn't makes sense)
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+        // This is bit of stratch to select the send button and click it
+        // You need to climb up the DOM tree three levels and then to second child and then the first child is the send button
+        // ALternate option: (mainEl.querySelector('[data-testid="send"]') || mainEl.querySelector('[data-icon="send"]')).click();
+        box.parentElement.parentElement.parentElement.children[1].children[0].click();
+        console.log(`"${message}" sent -> ${i + 1} times`);
+      }
+    })();
   }
 }
