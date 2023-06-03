@@ -11,7 +11,7 @@
  * I would like to point out that using this script for extensive spamming of messages on whatsapp is not recommended and it is violation of the TOS of whatsapp.
  *
  * @name    whatsapp-spammer-web
- * @version 1.0.0
+ * @version 1.1.0
  * @author  PhoenixCreation
  * @license MIT
  *
