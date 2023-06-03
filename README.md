@@ -19,14 +19,14 @@
 
 ## 📝 Usage 📝
 
-- Open web.whatsapp.com
+- Open web.whatsapp.com (Edge and Chrome are recommeded, It is not working on firefox as on version 1.1.0)
 - Login to your whatsapp account.
 - Go to the chat you want to spam. It works for both individual and group chats.
 - Open the developer console. There are many ways to open the developer console. Some of them are:
   - Right click on webpage anywhere and select `inspect element`. Then go to the console tab.
   - You can also use `Option + ⌘ + J` (on macOS), or `Shift + CTRL + J` (on Windows/Linux).
   - You can also use F12. Then go to the console tab.
-  - For more information about developer console for [chrome](https://developers.google.com/web/tools/chrome-devtools/console/) and for [firefox](https://developer.mozilla.org/en-US/docs/Tools).
+  - For more information about developer console for [chrome](https://developers.google.com/web/tools/chrome-devtools/console/) and for [Edge](https://learn.microsoft.com/en-us/microsoft-edge/devtools-guide-chromium/overview#open-devtools).
 - Copy the code from [whatsapp-spammer.js](/whatsapp-spammer.js) and paste it in the developer console.
   - `You should not put anything in console for any website unless you are absolutely sure that what it does.`
   - `If you are not sure what it does, then you should not use it.`
